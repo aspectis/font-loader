@@ -1,47 +1,56 @@
-/*! Font Loader v0.3.1 | © Aspectis | License: MIT | github.com/aspectis/font-loader */
+/*! Font Loader v0.4.0 | © Aspectis | License: MIT | github.com/aspectis/font-loader */
 
 (function() {
 	var config = fontLoaderConfig
+	var div = document.createElement('div')
 	var fonts = config.fonts
 	var timeout = config.timeout || 3000
 	var successClass = config.successClass || 'fonts-loaded'
-	var failedClass = config.failedClass || 'fonts-failed'
+	var failClass = config.failClass || 'fonts-failed'
 	var testString = config.testString || 'BESbswy'
+	var testTimeout
 
-	var div = document.createElement('div')
 	div.style.cssText = 'font-size:99px;position:fixed;visibility:hidden;white-space:nowrap;z-index:-9'
 	div.innerHTML = testString
 	document.body.appendChild(div)
 
-	var testTimeout = setTimeout(function() {
-		finish(failedClass)
+	testTimeout = setTimeout(function() {
+		finish(failClass)
 	}, timeout)
 
 	testIfLoaded()
 
 	function testIfLoaded() {
-		var differentCount = 0
+		var diffCount = 0
+		var fallbackWidth
+		var currentWidth
+
 		for ( i = 0; i < fonts.length; i++ ) {
-			div.style.fontStyle = fonts[1] ? fonts[1] : ''
-			div.style.fontWeight = fonts[2] ? fonts[2] : ''
+			var font = fonts[i];
+			div.style.fontStyle = font[1] ? font[1] : ''
+			div.style.fontWeight = font[2] ? font[2] : ''
 			div.style.fontFamily = 'cursive'
-			var fallbackWidth = div.clientWidth
-			div.style.fontFamily = fonts[0] + ', cursive'
-			var currentWidth = div.clientWidth
+			fallbackWidth = div.clientWidth
+
+			div.style.fontFamily = font[0] + ',cursive'
+			currentWidth = div.clientWidth
+
 			if ( currentWidth !== fallbackWidth ) {
-				differentCount++
+				diffCount++
 			}
 		}
-		if ( differentCount === fonts.length ) {
+
+		if ( diffCount === fonts.length ) {
 			finish(successClass)
 		}
+
 		setTimeout(testIfLoaded, 20)
 	}
 
-	function finish(addClass) {
+	function finish(rootClass) {
+		var className = document.documentElement.className
 		clearTimeout(testTimeout)
 		document.body.removeChild(div);
-		var className = document.documentElement.className
-		document.documentElement.className = (className ? className + ' ' : '') + addClass
+		document.documentElement.className = (className ? className + ' ' : '') + rootClass
 	}
 })()
