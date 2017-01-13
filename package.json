@@ -1,0 +1,12 @@
+{
+  "name": "font-loader",
+  "version": "0.3.1",
+  "description": "",
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aspectis/font-loader.git"
+  },
+  "author": "Aspectis",
+  "license": "MIT"
+}
