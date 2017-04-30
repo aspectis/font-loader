@@ -1,6 +1,5 @@
-/*! Font Loader v0.4.0 | © Aspectis | License: MIT | github.com/aspectis/font-loader */
-
-(function() {
+/*! Font Loader v0.4.1 | © Aspectis | License: MIT | github.com/aspectis/font-loader */
+;(function() {
 	var config = fontLoaderConfig
 	var div = document.createElement('div')
 	var fonts = config.fonts
@@ -14,18 +13,15 @@
 	div.innerHTML = testString
 	document.body.appendChild(div)
 
-	testTimeout = setTimeout(function() {
-		finish(failClass)
-	}, timeout)
+	testTimeout = setTimeout(finish.bind(null, failClass), timeout)
 
 	testIfLoaded()
 
 	function testIfLoaded() {
-		var diffCount = 0
 		var fallbackWidth
 		var currentWidth
 
-		for ( i = 0; i < fonts.length; i++ ) {
+		for (i = 0; i < fonts.length; i++) {
 			var font = fonts[i];
 			div.style.fontStyle = font[1] ? font[1] : ''
 			div.style.fontWeight = font[2] ? font[2] : ''
@@ -35,22 +31,20 @@
 			div.style.fontFamily = font[0] + ',cursive'
 			currentWidth = div.clientWidth
 
-			if ( currentWidth !== fallbackWidth ) {
-				diffCount++
-			}
+			if (currentWidth !== fallbackWidth) fonts.splice(i, 1)
 		}
 
-		if ( diffCount === fonts.length ) {
+		if (fonts.length) {
+			setTimeout(testIfLoaded, 20)
+		} else {
 			finish(successClass)
 		}
-
-		setTimeout(testIfLoaded, 20)
 	}
 
 	function finish(rootClass) {
 		var className = document.documentElement.className
 		clearTimeout(testTimeout)
-		document.body.removeChild(div);
+		document.body.removeChild(div)
 		document.documentElement.className = (className ? className + ' ' : '') + rootClass
 	}
 })()
